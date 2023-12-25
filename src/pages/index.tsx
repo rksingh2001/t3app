@@ -1,12 +1,21 @@
+import { useState } from "react";
 import { api } from "~/utils/api";
 
 export default function Home() {
   const hello = api.post.create.useMutation();
+  const [val, setVal] = useState("");
 
-  const handleChange = (e: any) => {
-    e.preventDefault()
+  const handleEnter = (e: any) => {
+    if (e.code !== "Enter") {
+      return;
+    }
 
     hello.mutate({ text: e.target.value });
+  }
+
+  const handleChange = (e: any) => {
+    console.log(e.target.value)
+    setVal(e.target.value)
   }
 
   return (
@@ -14,7 +23,7 @@ export default function Home() {
       <div className="h-10">
         {hello.data?.name ?? ""}
       </div>
-      <input onChange={handleChange} className="text-violet-500 text-xl" />
+      <input value={val} onChange={handleChange} onKeyDown={handleEnter} className="text-violet-500 text-xl" />
     </div>
   );
 }

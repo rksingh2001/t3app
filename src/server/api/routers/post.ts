@@ -20,6 +20,7 @@ export const postRouter = createTRPCRouter({
     .input(z.object({ text: z.string() }))
     .mutation(async ({ input }) => {
       // simulate a slow db call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       post = { id: post.id + 1, name: input.text };
       return post;
