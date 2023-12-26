@@ -2,31 +2,31 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
+let posts = [
+  {
+    id: 1,
+    name: "Hello World",
+  }
+];
+
 let post = {
   id: 1,
-  name: "Hello World",
+  name: "Example Todo",
 };
 
-export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Server ${input.text}`,
-      };
-    }),
 
+export const postRouter = createTRPCRouter({
   create: publicProcedure
     .input(z.object({ text: z.string() }))
-    .mutation(async ({ input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+    .mutation(({ input }) => {
       post = { id: post.id + 1, name: input.text };
-      return post;
+      posts.push(post);
+      return posts;
     }),
-
-  getLatest: publicProcedure.query(() => {
-    return post;
-  }),
+  
+  clearAll: publicProcedure
+    .mutation(() => {
+      posts = [];
+      return posts;
+    })
 });
