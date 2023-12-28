@@ -8,7 +8,9 @@ export default function Home() {
   const handleKeyDown = (e: any) => {
     switch (e.code) {
       case "Enter":
-        hello.mutate({ text: e.target.value });
+        if (e.target.value) {
+          hello.mutate({ text: e.target.value });
+        }
         break;
       default:
         return;
@@ -17,7 +19,6 @@ export default function Home() {
   }
 
   const handleChange = (e: any) => {
-    console.log(e.target.value)
     setVal(e.target.value)
   }
 
@@ -26,12 +27,12 @@ export default function Home() {
       <div>
         <h1 className="font-semibold">Todo List</h1>
       </div>
-      <input value={val} onChange={handleChange} onKeyDown={handleKeyDown} className="text-violet-500 text-xl" />
+      <input value={val} onChange={handleChange} onKeyDown={handleKeyDown} className="text-violet-500 text-xl p-1" />
       <div className="h-[2vh]"></div>
       <div className="h-[60vh] w-[70%] flex flex-wrap gap-2 items-start content-start">
         {
           hello.data?.map(obj =>
-            <div className="p-1 bg-violet-700">
+            <div className="p-1 bg-violet-700 rounded-sm">
               {obj.name}
             </div>)
           ?? ""
