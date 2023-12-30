@@ -10,12 +10,24 @@ type PostType = {
 let posts: PostType[] = [];
 
 export const postRouter = createTRPCRouter({
+  getAll: publicProcedure
+    .query(() => {
+      return posts;
+    }),
+
   create: publicProcedure
     .input(z.object({ text: z.string() }))
     .mutation(({ input }) => {
       const post: PostType = { id: posts.length, name: input.text };
       posts.push(post);
       return posts;
+    }),
+
+  delete: publicProcedure
+    .input(z.number())
+    .mutation(({ input }) => {
+      posts = posts.filter(post => post.id !== input)
+      return posts
     }),
 
   clearAll: publicProcedure
