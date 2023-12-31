@@ -10,6 +10,12 @@ type PostType = {
 
 let posts: PostType[] = [];
 
+function generateUniqueId() {
+  const timestamp = new Date().getTime();
+  const randomPart = Math.random() * 10000;
+  return timestamp + randomPart;
+}
+
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure
     .query(() => {
@@ -19,7 +25,8 @@ export const postRouter = createTRPCRouter({
   create: publicProcedure
     .input(z.object({ text: z.string() }))
     .mutation(({ input }) => {
-      const post: PostType = { id: posts.length, name: input.text, isOpen: false };
+      const id = generateUniqueId();
+      const post: PostType = { id: id, name: input.text, isOpen: false };
       posts.push(post);
       return posts;
     }),
