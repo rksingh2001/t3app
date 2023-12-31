@@ -15,6 +15,7 @@ function CloseButton({ handleOnClickCloseButton }: { handleOnClickCloseButton: M
 export default function Home() {
   const hello = api.post.create.useMutation();
   const deletePost = api.post.delete.useMutation();
+  const openPost = api.post.openPost.useMutation();
   const [val, setVal] = useState("");
   const [posts, setPosts] = useState(api.post.getAll.useQuery().data ?? []);
 
@@ -41,6 +42,11 @@ export default function Home() {
     setVal(e.target.value)
   }
 
+  const handleInputOpen = async (id: number) => {
+    const res = await openPost.mutateAsync(id);
+    setPosts(res);
+  }
+
   return (
     <div className="text-cyan-100 text-2xl flex justify-center items-center flex-col h-[100vh] gap-2">
       <div>
@@ -51,9 +57,15 @@ export default function Home() {
       <div className="h-[60vh] w-[70%] flex flex-wrap gap-2 items-start content-start">
         {
           posts?.map(obj =>
-            <div key={obj.id} className="relative p-2 bg-violet-700 rounded-sm">
+            <div onClick={() => handleInputOpen(obj.id)} key={obj.id} className="flex relative p-2 bg-violet-700 rounded-sm">
               <CloseButton key={obj.id} handleOnClickCloseButton={() => handleOnClickCloseButton(obj.id)} />
-              {obj.name}
+              {!obj.isOpen ?
+                <div>
+                  {obj.name}
+                </div>
+                :
+                <input className="bg-violet-700 w-fit" autoFocus size={obj.name.length} type="text" value={obj.name} />
+              }
             </div>)
           ?? ""
         }
