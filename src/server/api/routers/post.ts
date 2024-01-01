@@ -53,5 +53,14 @@ export const postRouter = createTRPCRouter({
       post.isOpen = true;
       otherPosts.forEach(post => post.isOpen = false);
       return posts;
-    })
+    }),
+
+  editPost: publicProcedure
+  .input(z.object({ text: z.string(), id: z.number() }))
+  .mutation(({ input }) => {
+    const post = posts.find(post => post.id === input.id);
+    if (!post) return posts;
+    post.name = input.text;
+    return posts;
+  })
 });

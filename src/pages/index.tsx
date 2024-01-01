@@ -6,7 +6,7 @@ function CloseButton({ handleOnClickCloseButton }: { handleOnClickCloseButton: M
     <button onClick={handleOnClickCloseButton} type="button" className="bg-violet-800 rounded-md p-1 absolute top-[-0.25rem] right-[-0.25rem] inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
       <span className="sr-only">Close menu</span>
       <svg className="h-2 w-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="white" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
   )
@@ -16,6 +16,7 @@ export default function Home() {
   const hello = api.post.create.useMutation();
   const deletePost = api.post.delete.useMutation();
   const openPost = api.post.openPost.useMutation();
+  const editPost = api.post.editPost.useMutation();
   const [val, setVal] = useState("");
   const [posts, setPosts] = useState(api.post.getAll.useQuery().data ?? []);
 
@@ -47,6 +48,11 @@ export default function Home() {
     setPosts(res);
   }
 
+  const handleInputChange = async (e: any, id: number) => {
+    const res = await editPost.mutateAsync({ text: e.target.value, id });
+    setPosts(res);
+  }
+
   return (
     <div className="text-cyan-100 text-2xl flex justify-center items-center flex-col h-[100vh] gap-2">
       <div>
@@ -64,7 +70,7 @@ export default function Home() {
                   {obj.name}
                 </div>
                 :
-                <input className="bg-violet-700 w-fit" autoFocus size={obj.name.length} type="text" value={obj.name} />
+                <input onChange={(e) => handleInputChange(e, obj.id)} className="bg-violet-700 w-fit" autoFocus size={obj.name.length} type="text" value={obj.name} />
               }
             </div>)
           ?? ""
